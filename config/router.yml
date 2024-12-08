@@ -1,0 +1,2 @@
+error_handling:
+  404: \Gashmob\PicLib\Error\Error404

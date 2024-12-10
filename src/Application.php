@@ -27,28 +27,12 @@ declare(strict_types=1);
 
 namespace Gashmob\PicLib;
 
-use Gashmob\PicLib\Controller\HomeController;
-use Gashmob\PicLib\Controller\StatusController;
-use Gashmob\PicLib\Services\StatusService;
-use Gashmob\PicLib\Services\Twig;
-use Archict\Brick\ListeningEvent;
 use Archict\Brick\Service;
-use Archict\Router\Method;
-use Archict\Router\RouteCollectorEvent;
 
 #[Service]
 final readonly class Application
 {
-    public function __construct(
-        private StatusService $status_service,
-        private Twig $twig,
-    ) {
-    }
-
-    #[ListeningEvent]
-    public function collectRoutes(RouteCollectorEvent $collector): void
+    public function __construct()
     {
-        $collector->addRoute(Method::GET, '', new HomeController($this->twig));
-        $collector->addRoute('GET', '/status', new StatusController($this->status_service));
     }
 }

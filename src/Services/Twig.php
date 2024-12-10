@@ -41,6 +41,9 @@ final readonly class Twig
         $this->twig = new Environment(new FilesystemLoader(__DIR__ . '/../../templates/'));
     }
 
+    /**
+     * @param array<string, mixed> $context
+     */
     public function render(string $template_name, array $context = []): string
     {
         return $this->twig->render($template_name, $context);

@@ -25,30 +25,14 @@
 
 declare(strict_types=1);
 
-namespace Gashmob\PicLib\Services;
+namespace Gashmob\PicLib;
 
-use Archict\Brick\Service;
+use PHPUnit\Framework\TestCase;
 
-#[Service]
-final class StatusService
+final class FakeTest extends TestCase
 {
-    public function getCurrentStatus(): array
+    public function testFake(): void
     {
-        return [
-            'status'       => 'OK',
-            'memory_usage' => $this->getMemoryUsage(),
-        ];
-    }
-
-    private function getMemoryUsage(): string
-    {
-
-        $free     = shell_exec('free');
-        $free     = trim($free);
-        $free_arr = explode("\n", $free);
-        $mem      = explode(" ", $free_arr[1]);
-        $mem      = array_filter($mem);
-        $mem      = array_merge($mem);
-        return sprintf('%.2f%%', $mem[2] / $mem[1] * 100);
+        self::assertTrue(true); // @phpstan-ignore staticMethod.alreadyNarrowedType
     }
 }

@@ -25,36 +25,35 @@
 
 declare(strict_types=1);
 
-namespace Gashmob\PicLib;
+namespace Gashmob\PicLib\Controller;
 
-use Archict\Brick\ListeningEvent;
-use Archict\Brick\Service;
-use Archict\Router\Method;
-use Archict\Router\RouteCollectorEvent;
-use Gashmob\PicLib\Controller\AdminController;
-use Gashmob\PicLib\Controller\AdminLoginController;
+use Archict\Router\RequestHandler;
+use Archict\Router\ResponseFactory;
 use Gashmob\PicLib\Services\SessionService;
 use Gashmob\PicLib\Services\Twig;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-#[Service(ApplicationConfiguration::class, 'app.yml')]
-final readonly class Application
+final readonly class AdminController implements RequestHandler
 {
     public function __construct(
-        private ApplicationConfiguration $configuration,
         private SessionService $session,
         private Twig $twig,
     ) {
     }
 
-    #[ListeningEvent]
-    public function collectRoutes(RouteCollectorEvent $collector): void
+    public function handle(ServerRequestInterface $request): ResponseInterface|string // phpcs:disable Generic.CodeAnalysis.UnusedFunctionParameter
     {
-        $collector->addRoute(Method::GET, '/admin', new AdminController($this->session, $this->twig));
-        $login_controller = new AdminLoginController($this->twig, $this->session, $this->configuration);
-        $collector->addRoute(Method::GET, '/admin/login', $login_controller);
-        $collector->addRoute(Method::POST, '/admin/login', $login_controller);
+        if ($this->session->get('login') === null) {
+            return ResponseFactory::build()->withStatus(301)->withHeader('Location', '/admin/login')->get();
+        }
 
-        // For cypress testing purpose
-        $collector->addRoute(Method::HEAD, '/', static fn() => 'Hi there!');
+        $this->twig->addApp('admin');
+
+        return $this->twig->render(
+            'app.html.twig', [
+            'title' => 'Administration',
+            ]
+        );
     }
 }

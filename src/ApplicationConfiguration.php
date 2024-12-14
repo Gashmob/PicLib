@@ -27,34 +27,14 @@ declare(strict_types=1);
 
 namespace Gashmob\PicLib;
 
-use Archict\Brick\ListeningEvent;
-use Archict\Brick\Service;
-use Archict\Router\Method;
-use Archict\Router\RouteCollectorEvent;
-use Gashmob\PicLib\Controller\AdminController;
-use Gashmob\PicLib\Controller\AdminLoginController;
-use Gashmob\PicLib\Services\SessionService;
-use Gashmob\PicLib\Services\Twig;
-
-#[Service(ApplicationConfiguration::class, 'app.yml')]
-final readonly class Application
+final class ApplicationConfiguration
 {
-    public function __construct(
-        private ApplicationConfiguration $configuration,
-        private SessionService $session,
-        private Twig $twig,
-    ) {
+    public function __construct(public string $app_password)
+    {
     }
 
-    #[ListeningEvent]
-    public function collectRoutes(RouteCollectorEvent $collector): void
+    public function __destruct()
     {
-        $collector->addRoute(Method::GET, '/admin', new AdminController($this->session, $this->twig));
-        $login_controller = new AdminLoginController($this->twig, $this->session, $this->configuration);
-        $collector->addRoute(Method::GET, '/admin/login', $login_controller);
-        $collector->addRoute(Method::POST, '/admin/login', $login_controller);
-
-        // For cypress testing purpose
-        $collector->addRoute(Method::HEAD, '/', static fn() => 'Hi there!');
+        unset($this->app_password);
     }
 }

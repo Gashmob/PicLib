@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>PicLib - {% block title %}{% endblock %}</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="Picture Library"/>
+    <meta name="keywords" content="PicLib"/>
+    <meta name="author" content="Kevin Traini"/>
+    <meta name="application-name" content="PicLib">
+    <meta name="generator" content="Archict with Twig">
+
+    <meta property="og:title" content="PicLib">
+    <meta property="og:description" content="Picture Library">
+    <meta property="og:image" content="{{ asset('img', 'opengraph.png') }}">
+
+    <link rel="shortcut icon" href="{{ asset('img', 'logo.png') }}">
+
+    {% for css_asset in css_assets %}
+        <link rel="stylesheet" href="{{ asset('css', css_asset) }}">
+    {% endfor %}
+    {% for js_asset in js_assets %}
+        <script src="{{ asset('js', js_asset) }}"></script>
+    {% endfor %}
+    {% for app in apps %}
+        <script src="{{ asset('app_js', app) }}"></script>
+        <link rel="stylesheet" href="{{ asset('app_css', app) }}">
+    {% endfor %}
+</head>
+<body>
+{% block body %}
+{% endblock %}
+</body>
+</html>

@@ -25,36 +25,41 @@
 
 declare(strict_types=1);
 
-namespace Gashmob\PicLib;
+namespace Gashmob\PicLib\Controller;
 
-use Archict\Brick\ListeningEvent;
-use Archict\Brick\Service;
-use Archict\Router\Method;
-use Archict\Router\RouteCollectorEvent;
-use Gashmob\PicLib\Controller\AdminController;
-use Gashmob\PicLib\Controller\AdminLoginController;
-use Gashmob\PicLib\Services\SessionService;
 use Gashmob\PicLib\Services\Twig;
+use Gashmob\PicLib\Test\Builder\RequestBuilder;
+use Gashmob\PicLib\Test\SessionSandbox;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
 
-#[Service(ApplicationConfiguration::class, 'app.yml')]
-final readonly class Application
+final class AdminControllerTest extends TestCase
 {
-    public function __construct(
-        private ApplicationConfiguration $configuration,
-        private SessionService $session,
-        private Twig $twig,
-    ) {
+    use SessionSandbox;
+
+    private AdminController $controller;
+
+    protected function setUp(): void
+    {
+        $this->controller = new AdminController($this->session, new Twig());
     }
 
-    #[ListeningEvent]
-    public function collectRoutes(RouteCollectorEvent $collector): void
+    public function testItRedirectsToLoginIfNotLogin(): void
     {
-        $collector->addRoute(Method::GET, '/admin', new AdminController($this->session, $this->twig));
-        $login_controller = new AdminLoginController($this->twig, $this->session, $this->configuration);
-        $collector->addRoute(Method::GET, '/admin/login', $login_controller);
-        $collector->addRoute(Method::POST, '/admin/login', $login_controller);
+        $this->session->set('login', null);
+        $response = $this->controller->handle(RequestBuilder::aRequest('GET', '/admin')->build());
 
-        // For cypress testing purpose
-        $collector->addRoute(Method::HEAD, '/', static fn() => 'Hi there!');
+        self::assertInstanceOf(ResponseInterface::class, $response);
+        self::assertSame(301, $response->getStatusCode());
+        self::assertSame('/admin/login', $response->getHeaderLine('Location'));
+    }
+
+    public function testItDisplaysPageIfLogin(): void
+    {
+        $this->session->set('login', true);
+        $response = $this->controller->handle(RequestBuilder::aRequest('GET', '/admin')->build());
+
+        self::assertIsString($response);
+        self::assertNotEmpty($response);
     }
 }

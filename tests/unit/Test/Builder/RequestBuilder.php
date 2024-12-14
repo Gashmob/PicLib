@@ -25,36 +25,39 @@
 
 declare(strict_types=1);
 
-namespace Gashmob\PicLib;
+namespace Gashmob\PicLib\Test\Builder;
 
-use Archict\Brick\ListeningEvent;
-use Archict\Brick\Service;
-use Archict\Router\Method;
-use Archict\Router\RouteCollectorEvent;
-use Gashmob\PicLib\Controller\AdminController;
-use Gashmob\PicLib\Controller\AdminLoginController;
-use Gashmob\PicLib\Services\SessionService;
-use Gashmob\PicLib\Services\Twig;
+use GuzzleHttp\Psr7\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 
-#[Service(ApplicationConfiguration::class, 'app.yml')]
-final readonly class Application
+final class RequestBuilder
 {
-    public function __construct(
-        private ApplicationConfiguration $configuration,
-        private SessionService $session,
-        private Twig $twig,
+    /** @var array<string, mixed> */
+    private array $post_data = [];
+
+    private function __construct(
+        private readonly string $method,
+        private readonly string $uri,
     ) {
     }
 
-    #[ListeningEvent]
-    public function collectRoutes(RouteCollectorEvent $collector): void
+    public static function aRequest(string $method, string $uri): self
     {
-        $collector->addRoute(Method::GET, '/admin', new AdminController($this->session, $this->twig));
-        $login_controller = new AdminLoginController($this->twig, $this->session, $this->configuration);
-        $collector->addRoute(Method::GET, '/admin/login', $login_controller);
-        $collector->addRoute(Method::POST, '/admin/login', $login_controller);
+        return new self($method, $uri);
+    }
 
-        // For cypress testing purpose
-        $collector->addRoute(Method::HEAD, '/', static fn() => 'Hi there!');
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function withPostBody(array $data): self
+    {
+        $this->post_data = $data;
+        return $this;
+    }
+
+    public function build(): ServerRequestInterface
+    {
+        $request = new ServerRequest($this->method, $this->uri);
+        return $request->withParsedBody($this->post_data);
     }
 }

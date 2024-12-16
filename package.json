@@ -1,0 +1,18 @@
+{
+  "name": "@piclib/piclib",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "test:e2e": "turbo run test:e2e"
+  },
+  "author": "Kevin Traini <kevin@ktraini.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "turbo": "^2.3.3"
+  },
+  "packageManager": "pnpm@9.14.4",
+  "engines": {
+    "node": ">=20"
+  }
+}

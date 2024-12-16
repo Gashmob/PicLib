@@ -1,0 +1,31 @@
+{
+  "name": "@piclib/login",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "watch": "vite build --watch",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "author": "Kevin Traini <kevin@ktraini.com>",
+  "license": "MIT",
+  "packageManager": "pnpm@9.14.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@primevue/forms": "^4.2.5",
+    "@primevue/themes": "^4.2.5",
+    "primevue": "^4.2.5",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.16",
+    "typescript": "5.6.3",
+    "vite": "^6.0.3",
+    "vitest": "^2.1.8",
+    "vue-tsc": "^2.1.10"
+  }
+}

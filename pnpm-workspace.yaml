@@ -1,0 +1,4 @@
+packages:
+  - "themes/*"
+  - "scripts/*"
+  - "tests/e2e"

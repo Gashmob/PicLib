@@ -1,4 +1,3 @@
-<?php
 /**
  * MIT License
  *
@@ -22,17 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import "./style.css";
+import { createApp } from "vue";
+import PrimeVue from "primevue/config";
+import Aura from '@primevue/themes/aura';
+import App from "./App.vue";
 
-declare(strict_types=1);
-
-namespace Gashmob\PicLib;
-
-use PHPUnit\Framework\TestCase;
-
-final class FakeTest extends TestCase
-{
-    public function testFake(): void
-    {
-        self::assertTrue(true); // @phpstan-ignore staticMethod.alreadyNarrowedType
+document.addEventListener("DOMContentLoaded", () => {
+    const mountpoint = document.querySelector("#app-mountpoint");
+    if (mountpoint === null) {
+        throw new Error("App mountpoint not found");
     }
-}
+
+    const app = createApp(App);
+    app.use(PrimeVue, {
+        theme: {
+            preset: Aura,
+        },
+    });
+    app.mount(mountpoint);
+});

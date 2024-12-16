@@ -32,13 +32,42 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
 #[Service]
-final readonly class Twig
+final class Twig
 {
-    private Environment $twig;
+    private readonly Environment $twig;
+    /**
+     * @var array<string, mixed>
+     */
+    private array $context;
 
     public function __construct()
     {
-        $this->twig = new Environment(new FilesystemLoader(__DIR__ . '/../../templates/'));
+        $this->twig    = new Environment(new FilesystemLoader(__DIR__ . '/../../templates/'));
+        $this->context = [
+            'js_assets'  => [],
+            'css_assets' => [],
+            'apps'       => [],
+        ];
+
+        $this->twig->addExtension(new TwigExtension());
+    }
+
+    public function addCssAsset(string $file_path): void
+    {
+        assert(is_array($this->context['css_assets']));
+        $this->context['css_assets'][] = $file_path;
+    }
+
+    public function addJsAsset(string $file_path): void
+    {
+        assert(is_array($this->context['js_assets']));
+        $this->context['js_assets'][] = $file_path;
+    }
+
+    public function addApp(string $app_name): void
+    {
+        assert(is_array($this->context['apps']));
+        $this->context['apps'][] = $app_name;
     }
 
     /**
@@ -46,6 +75,11 @@ final readonly class Twig
      */
     public function render(string $template_name, array $context = []): string
     {
-        return $this->twig->render($template_name, $context);
+        return $this->twig->render(
+            $template_name, [
+                ...$this->context,
+                ...$context,
+            ],
+        );
     }
 }

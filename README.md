@@ -2,6 +2,7 @@
 
 Pictures Library. Help you to store and share pictures.
 
-**How to start:**
+## Development
 
-`php -S localhost:8080 -t ./public`
+You can start a local instance with `docker compose up -d dev`. It will start a container with a volume bind on project
+directory, so you can see your modifications directly.

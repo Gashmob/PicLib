@@ -1,0 +1,10 @@
+services:
+  dev:
+    container_name: piclib-dev
+    build:
+      context: tools/docker
+      dockerfile: dev.Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ".:/app:ro"

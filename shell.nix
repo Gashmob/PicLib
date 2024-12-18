@@ -16,5 +16,7 @@ pkgs.mkShellNoCC {
     pkgs.php83Packages.composer
     pkgs.nodejs_20
     pnpm
+    pkgs.docker
+    pkgs.docker-compose
   ];
 }
